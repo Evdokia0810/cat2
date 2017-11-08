@@ -1,0 +1,148 @@
+#include <iostream>
+#include <vector>
+#include <cmath>
+#include <sstream>
+using namespace std;
+
+vector <int> toNumK(int n, int k){
+	vector <int> NumK;
+	if (n == 0) NumK.push_back(0);
+	while (n > 0){
+		int p = n%k;
+		NumK.push_back(p);
+		n /= k;
+	}
+	return NumK;
+}
+
+string toStr(vector <int> NumK, int k, int n){
+	string res;
+	string str;
+	for (int i = NumK.size() - 1; i > -1; i--){
+		if (NumK[i] == 1) str = "1";
+		else if (NumK[i] == 0) str = "0";
+		else str = to_string(NumK[i]);
+		res.append(str);
+	}
+	str.clear();
+	if (res.size() < n){
+		for (int i = 0; i < n - res.size(); i++)
+			str.append("0");
+		res = str.append(res);
+	}
+	return res;
+}
+
+//struct NumK{
+//	int name;
+//	vector <int> NumK;
+//};
+
+int main(){
+	setlocale(0, "");
+
+
+	int n, k;
+	cin >> n >> k;
+
+	vector <vector <int>> G(pow(n, k));
+	vector <int> vers;
+	vector <string> znach;
+
+	for (int i = 0; i < pow(n, k); i++){
+		znach.push_back(toStr(toNumK(i, k), k, n));
+	}
+
+
+
+	for (int i = 0; i < pow(n, k); i++){
+		for (int j = 0; j < pow(n, k); j++){
+			if (i!=j)
+			if (znach[i].substr(1, znach[i].size() - 1) == znach[j].substr(0, znach[j].size() - 1)){
+				G[i].push_back(j);
+				bool b2 = true;
+				bool a2 = true;
+				for (int d = 0; d < vers.size(); d++){
+					if (vers[d] == i) a2 = false;
+					if (vers[d] == j) b2 = false;
+				}
+				if (b2) vers.push_back(j);
+				if (a2) vers.push_back(i);
+			}
+		}
+	}
+
+	for (int i = 0; i < pow(n, k); i++){
+		for (int j = 0; j < G[i].size(); j++){
+
+			for (int k = 0; k < G[i].size(); k++)
+				if (G[i][j] == G[j][k]){
+
+				}
+			
+		}
+	}
+
+
+				bool gam = true;
+				for (int i = 0; i < vers.size(); i++)
+				for (int j = 0; j < vers.size(); j++){ 
+				bool Smeg = false; 
+				if (i != j){
+				for (int k = 0; k < G[vers[i]].size(); k++){
+				if (G[vers[i]][k] == vers[j]){ Smeg = true; break; }
+				}
+				if (!Smeg){
+				if (G[vers[i]].size() + G[vers[j]].size() < vers.size()) gam = false;
+				}
+				}
+				}
+				if (!gam) cout << "Ãðàô íå ãàìèëüòîíîâ!" << endl;
+				else{
+				vector <int> Hampath = vers;
+				Hampath.push_back(vers[0]);
+				for (int i = 0; i < Hampath.size(); i++)
+				for (int j = 0; j < Hampath.size(); j++){
+				bool Smeg = false;
+				if (i != j){
+				for (int k = 0; k < G[Hampath[i]].size(); k++){
+				if (G[Hampath[i]][k] == Hampath[j]){ Smeg = true; break; }
+				}
+				if (!Smeg){
+				if ((i - j == 1) || (j - i == 1)){
+				if (i - j == 1){
+				i = i + j - (j = i);
+				}
+				for (int k = 0; k < Hampath.size(); k++){
+				if (k != i){
+				for (int p = 0; p < G[Hampath[i]].size(); p++){
+				if ((G[Hampath[i]][p] == Hampath[k]) && (G[Hampath[i + 1]][p] == Hampath[k + 1])){
+				vector <int> temp;
+				if (i + 1 > k){
+				i = i + k - (k = (i + 1));
+				}
+				for (int y = i + 1; y < k + 1; y++)
+				temp.push_back(Hampath[y]);
+				for (int y = i + 1; y < k + 1; y++)
+				Hampath[y] = temp[temp.size() + i - y];
+				}
+				}
+				}
+				}
+				}
+				}
+				}
+				}
+				cout << "Hamiltonian cycle: ";
+				for (int h = 0; h < Hampath.size() - 1; h++){
+				cout << znach[Hampath[h]] << "->";
+				}
+				cout << znach[Hampath[Hampath.size() - 1]] << endl;
+				}
+
+
+	
+
+	system("pause");
+	return 0;
+}
